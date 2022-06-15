@@ -12,46 +12,66 @@ class GildedRose {
 
         for (Item item : items) {
 
-            if (!isSulfuras(item)) {
+            if (isSulfuras(item)) {
+                updateSulfuras(item);
+            }
 
-                if (isAgedBrie(item)) {
-                    increaseQuality(item);
+            if (isAgedBrie(item)) {
+                updateAgedBrie(item);
+            }
 
-                } else if (isConcertTicket(item)) {
-                    increaseTicketQuality(item);
+            if (isConcertTicket(item)) {
+                updateTicket(item);
+            }
 
-                } else {
-                    decreaseQuality(item);
-                }
+            if(isConjuredItem(item)) {
+                updateConjuredItem(item);
+            }
 
-                item.sellIn -= 1;
+            if (isStandardItem(item)) {
+                decreaseQuality(item);
             }
         }
     }
-
-    public void increaseQuality(Item item) {
-        if (item.quality < 50) {
-            item.quality += 1;
-        }
-    }
-
+    
     public void decreaseQuality(Item item) {
         if (item.quality > 0) {
             item.quality -= 1;
         }
+        item.sellIn -= 1;
     }
 
-    public void increaseTicketQuality(Item item) {
-        increaseQuality(item);
+    public void updateAgedBrie(Item item) {
+        if (item.quality < 50) {
+            item.quality += 1;
+        }
+        item.sellIn -= 1;
+    }
+    
+    public void updateTicket(Item item) {
+        item.quality += 1;
         if (item.sellIn < 11) {
-            increaseQuality(item);
+            item.quality += 1;
         }
         if (item.sellIn < 6) {
-            increaseQuality(item);
+            item.quality += 1;
         }
         if (item.sellIn < 0) {
             item.quality = 0;
         }
+        item.sellIn -= 1;
+    }
+
+    public void updateSulfuras(Item item) {
+        item.quality += 0;
+        item.sellIn += 0;
+    }
+
+    public void updateConjuredItem(Item item) {
+        if (item.quality < 50) {
+            item.quality -= 2;
+        }
+        item.sellIn -= 1;
     }
 
     private boolean isAgedBrie(Item item) {
@@ -65,4 +85,13 @@ class GildedRose {
     private boolean isSulfuras(Item item) {
         return item.name.equals("Sulfuras, Hand of Ragnaros");
     }
+
+    private boolean isConjuredItem(Item item) {
+        return item.name.equals("Conjured Mana Cake");
+    }
+
+    private boolean isStandardItem(Item item) {
+        return (!item.name.equals("Aged Brie") && !item.name.equals("Sulfuras, Hand of Ragnaros") && !item.name.equals("Backstage passes to a TAFKAL80ETC concert") && !item.name.equals("Conjured Mana Cake"));
+    }
+
 }
